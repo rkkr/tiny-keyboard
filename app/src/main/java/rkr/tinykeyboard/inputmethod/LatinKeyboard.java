@@ -27,7 +27,6 @@ import android.view.inputmethod.InputMethodManager;
 public class LatinKeyboard extends Keyboard {
 
     private Key mEnterKey;
-    private Key mSpaceKey;
     /**
      * Stores the current state of the mode change key. Its width will be dynamically updated to
      * match the region of {@link #mModeChangeKey} when {@link #mModeChangeKey} becomes invisible.
@@ -67,8 +66,6 @@ public class LatinKeyboard extends Keyboard {
         Key key = new LatinKey(res, parent, x, y, parser);
         if (key.codes[0] == 10) {
             mEnterKey = key;
-        } else if (key.codes[0] == ' ') {
-            mSpaceKey = key;
         } else if (key.codes[0] == Keyboard.KEYCODE_MODE_CHANGE) {
             mModeChangeKey = key;
             mSavedModeChangeKey = new LatinKey(res, parent, x, y, parser);
@@ -135,12 +132,6 @@ public class LatinKeyboard extends Keyboard {
                 mEnterKey.icon = res.getDrawable(R.drawable.sym_keyboard_return);
                 mEnterKey.label = null;
                 break;
-        }
-    }
-
-    void setSpaceIcon(final Drawable icon) {
-        if (mSpaceKey != null) {
-            mSpaceKey.icon = icon;
         }
     }
 

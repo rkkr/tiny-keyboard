@@ -26,12 +26,6 @@
 >
     <subtype
         android:label="@string/label_subtype_generic"
-        android:icon="@drawable/icon_en_us"
         android:imeSubtypeLocale="en_US"
-        android:imeSubtypeMode="keyboard" />
-    <subtype
-        android:label="@string/label_subtype_en_GB"
-        android:icon="@drawable/icon_en_gb"
-        android:imeSubtypeLocale="en_GB"
         android:imeSubtypeMode="keyboard" />
 </input-method>
