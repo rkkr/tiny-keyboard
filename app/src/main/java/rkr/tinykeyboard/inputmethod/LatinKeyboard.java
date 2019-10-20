@@ -19,7 +19,6 @@ package rkr.tinykeyboard.inputmethod;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
-import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -63,15 +62,15 @@ public class LatinKeyboard extends Keyboard {
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y, 
             XmlResourceParser parser) {
-        Key key = new LatinKey(res, parent, x, y, parser);
+        Key key = new Key(res, parent, x, y, parser);
         if (key.codes[0] == 10) {
             mEnterKey = key;
         } else if (key.codes[0] == Keyboard.KEYCODE_MODE_CHANGE) {
             mModeChangeKey = key;
-            mSavedModeChangeKey = new LatinKey(res, parent, x, y, parser);
+            mSavedModeChangeKey = new Key(res, parent, x, y, parser);
         } else if (key.codes[0] == LatinKeyboardView.KEYCODE_LANGUAGE_SWITCH) {
             mLanguageSwitchKey = key;
-            mSavedLanguageSwitchKey = new LatinKey(res, parent, x, y, parser);
+            mSavedLanguageSwitchKey = new Key(res, parent, x, y, parser);
         }
         return key;
     }
@@ -134,22 +133,4 @@ public class LatinKeyboard extends Keyboard {
                 break;
         }
     }
-
-    static class LatinKey extends Keyboard.Key {
-        
-        public LatinKey(Resources res, Keyboard.Row parent, int x, int y,
-                XmlResourceParser parser) {
-            super(res, parent, x, y, parser);
-        }
-        
-        /**
-         * Overriding this method so that we can reduce the target area for the key that
-         * closes the keyboard. 
-         */
-        @Override
-        public boolean isInside(int x, int y) {
-            return super.isInside(x, codes[0] == KEYCODE_CANCEL ? y - 10 : y);
-        }
-    }
-
 }
