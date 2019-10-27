@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="backspace">←</string>
+    <string name="enter">↩</string>
+    <string name="search">🔍</string>
+    <string name="language">🌐</string>
+    <string name="shift">⇧</string>
+</resources>

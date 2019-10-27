@@ -31,10 +31,4 @@
 
     <!-- Labels for subtype -->
     <string name="label_subtype_generic">%s</string>
-
-    <!-- Titles for ImePreference -->
-    <string name="settings_name">Tiny Keyboard Settings</string>
-    <string name="language_selection_title">Input languages</string>
-    <string name="select_language">Select input languages</string>
-    <string name="general_category">General</string>
 </resources>
