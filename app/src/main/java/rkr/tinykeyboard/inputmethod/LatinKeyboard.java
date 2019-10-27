@@ -31,7 +31,7 @@ public class LatinKeyboard extends Keyboard {
     private Key mLanguageSwitchKey;
     private Key mSavedModeChangeKey;
     private Key mSavedLanguageSwitchKey;
-    
+
     public LatinKeyboard(Context context, int xmlLayoutResId) {
         super(context, xmlLayoutResId);
     }
@@ -70,10 +70,6 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    /**
-     * This looks at the ime options given by the current editor, to set the
-     * appropriate label on the keyboard's enter key (if it has one).
-     */
     void setImeOptions(Resources res, int options) {
         if (mEnterKey == null) {
             return;
