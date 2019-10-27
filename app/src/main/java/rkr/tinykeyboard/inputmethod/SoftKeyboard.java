@@ -30,7 +30,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import static android.view.KeyEvent.KEYCODE_LANGUAGE_SWITCH;
@@ -48,8 +47,7 @@ public class SoftKeyboard extends InputMethodService
     private InputMethodManager mInputMethodManager;
 
     private KeyboardView mInputView;
-    
-    private StringBuilder mComposing = new StringBuilder();
+
     private int mLastDisplayWidth;
     private boolean mCapsLock;
     private long mLastShiftTime;
@@ -120,8 +118,7 @@ public class SoftKeyboard extends InputMethodService
      * a configuration change.
      */
     @Override public View onCreateInputView() {
-        mInputView = (KeyboardView) getLayoutInflater().inflate(
-                R.layout.input, null);
+        mInputView = (KeyboardView) getLayoutInflater().inflate(R.layout.input, null);
         mInputView.setOnKeyboardActionListener(this);
         setLatinKeyboard(mQwertyKeyboard);
         return mInputView;
@@ -129,8 +126,7 @@ public class SoftKeyboard extends InputMethodService
 
     private void setLatinKeyboard(LatinKeyboard nextKeyboard) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            final boolean shouldSupportLanguageSwitchKey =
-                    mInputMethodManager.shouldOfferSwitchingToNextInputMethod(getToken());
+            final boolean shouldSupportLanguageSwitchKey = mInputMethodManager.shouldOfferSwitchingToNextInputMethod(getToken());
             nextKeyboard.setLanguageSwitchKeyVisibility(shouldSupportLanguageSwitchKey);
         }
         mInputView.setKeyboard(nextKeyboard);
@@ -144,10 +140,6 @@ public class SoftKeyboard extends InputMethodService
      */
     @Override public void onStartInput(EditorInfo attribute, boolean restarting) {
         super.onStartInput(attribute, restarting);
-        
-        // Reset our state.  We want to do this even if restarting, because
-        // the underlying state of the text editor could have changed in any way.
-        mComposing.setLength(0);
         
         // We are now going to initialize our state based on the type of
         // text being edited.
@@ -179,9 +171,6 @@ public class SoftKeyboard extends InputMethodService
     @Override public void onFinishInput() {
         super.onFinishInput();
         
-        // Clear current composing text and candidates.
-        mComposing.setLength(0);
-        
         mCurKeyboard = mQwertyKeyboard;
         if (mInputView != null) {
             mInputView.closing();
@@ -196,80 +185,11 @@ public class SoftKeyboard extends InputMethodService
     }
 
     /**
-     * Deal with the editor reporting movement of its cursor.
-     */
-    @Override public void onUpdateSelection(int oldSelStart, int oldSelEnd,
-            int newSelStart, int newSelEnd,
-            int candidatesStart, int candidatesEnd) {
-        super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
-                candidatesStart, candidatesEnd);
-        
-        // If the current selection in the text view changes, we should
-        // clear whatever candidate text we have.
-        if (mComposing.length() > 0 && (newSelStart != candidatesEnd
-                || newSelEnd != candidatesEnd)) {
-            mComposing.setLength(0);
-            InputConnection ic = getCurrentInputConnection();
-            if (ic != null) {
-                ic.finishComposingText();
-            }
-        }
-    }
-    
-    /**
-     * Use this to monitor key events being delivered to the application.
-     * We get first crack at them, and can either resume them or let them
-     * continue to the app.
-     */
-    @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_BACK:
-                // The InputMethodService already takes care of the back
-                // key for us, to dismiss the input method if it is shown.
-                // However, our keyboard could be showing a pop-up window
-                // that back should dismiss, so we first allow it to do that.
-                if (event.getRepeatCount() == 0 && mInputView != null) {
-                    if (mInputView.handleBack()) {
-                        return true;
-                    }
-                }
-                break;
-                
-            case KeyEvent.KEYCODE_DEL:
-                // Special handling of the delete key: if we currently are
-                // composing text for the user, we want to modify that instead
-                // of let the application to the delete itself.
-                if (mComposing.length() > 0) {
-                    onKey(Keyboard.KEYCODE_DELETE, null);
-                    return true;
-                }
-                break;
-                
-            case KeyEvent.KEYCODE_ENTER:
-                // Let the underlying text editor always handle these.
-                return false;
-        }
-        
-        return super.onKeyDown(keyCode, event);
-    }
-
-    /**
-     * Helper function to commit any text being composed in to the editor.
-     */
-    private void commitTyped(InputConnection inputConnection) {
-        if (mComposing.length() > 0) {
-            inputConnection.commitText(mComposing, mComposing.length());
-            mComposing.setLength(0);
-        }
-    }
-
-    /**
      * Helper to update the shift state of our keyboard based on the initial
      * editor state.
      */
     private void updateShiftKeyState(EditorInfo attr) {
-        if (attr != null 
-                && mInputView != null && mQwertyKeyboard == mInputView.getKeyboard()) {
+        if (attr != null && mInputView != null && mQwertyKeyboard == mInputView.getKeyboard()) {
             int caps = 0;
             EditorInfo ei = getCurrentInputEditorInfo();
             if (ei != null && ei.inputType != InputType.TYPE_NULL) {
@@ -283,39 +203,15 @@ public class SoftKeyboard extends InputMethodService
      * Helper to send a key down / key up pair to the current editor.
      */
     private void keyDownUp(int keyEventCode) {
-        getCurrentInputConnection().sendKeyEvent(
-                new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
-        getCurrentInputConnection().sendKeyEvent(
-                new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
-    }
-    
-    /**
-     * Helper to send a character to the editor as raw key events.
-     */
-    private void sendKey(int keyCode) {
-        switch (keyCode) {
-            case '\n':
-                keyDownUp(KeyEvent.KEYCODE_ENTER);
-                break;
-            default:
-                if (keyCode >= '0' && keyCode <= '9') {
-                    keyDownUp(keyCode - '0' + KeyEvent.KEYCODE_0);
-                } else {
-                    getCurrentInputConnection().commitText(String.valueOf((char) keyCode), 1);
-                }
-                break;
-        }
+        getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
+        getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
     }
 
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes) {
         if (isWordSeparator(primaryCode)) {
-            // Handle separator
-            if (mComposing.length() > 0) {
-                commitTyped(getCurrentInputConnection());
-            }
-            sendKey(primaryCode);
+            handleCharacter(primaryCode);
             updateShiftKeyState(getCurrentInputEditorInfo());
         } else if (primaryCode == Keyboard.KEYCODE_DELETE) {
             handleBackspace();
@@ -323,9 +219,7 @@ public class SoftKeyboard extends InputMethodService
             handleShift();
         } else if (primaryCode == KEYCODE_LANGUAGE_SWITCH) {
             handleLanguageSwitch();
-            return;
-        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE
-                && mInputView != null) {
+        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE && mInputView != null) {
             Keyboard current = mInputView.getKeyboard();
             if (current == mSymbolsKeyboard || current == mSymbolsShiftedKeyboard) {
                 setLatinKeyboard(mQwertyKeyboard);
@@ -334,20 +228,11 @@ public class SoftKeyboard extends InputMethodService
                 mSymbolsKeyboard.setShifted(false);
             }
         } else {
-            handleCharacter(primaryCode, keyCodes);
+            handleCharacter(primaryCode);
         }
     }
 
     public void onText(CharSequence text) {
-        InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
-        ic.beginBatchEdit();
-        if (mComposing.length() > 0) {
-            commitTyped(ic);
-        }
-        ic.commitText(text, 0);
-        ic.endBatchEdit();
-        updateShiftKeyState(getCurrentInputEditorInfo());
     }
     
     private void handleBackspace() {
@@ -376,14 +261,13 @@ public class SoftKeyboard extends InputMethodService
         }
     }
     
-    private void handleCharacter(int primaryCode, int[] keyCodes) {
+    private void handleCharacter(int primaryCode) {
         if (isInputViewShown()) {
             if (mInputView.isShifted()) {
                 primaryCode = Character.toUpperCase(primaryCode);
             }
         }
-        getCurrentInputConnection().commitText(
-                String.valueOf((char) primaryCode), 1);
+        getCurrentInputConnection().commitText(String.valueOf((char) primaryCode), 1);
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
@@ -415,13 +299,8 @@ public class SoftKeyboard extends InputMethodService
         }
     }
     
-    private String getWordSeparators() {
-        return mWordSeparators;
-    }
-    
     public boolean isWordSeparator(int code) {
-        String separators = getWordSeparators();
-        return separators.contains(String.valueOf((char)code));
+        return mWordSeparators.contains(String.valueOf((char)code));
     }
     
     public void swipeRight() {
