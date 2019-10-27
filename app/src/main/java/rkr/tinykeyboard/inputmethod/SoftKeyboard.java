@@ -47,13 +47,10 @@ public class SoftKeyboard extends InputMethodService
     private LatinKeyboard mQwertyKeyboard;
     
     private LatinKeyboard mCurKeyboard;
-    
-    private String mWordSeparators;
 
     @Override public void onCreate() {
         super.onCreate();
         mInputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        mWordSeparators = getResources().getString(R.string.word_separators);
     }
 
     Context getDisplayContext() {
@@ -164,10 +161,7 @@ public class SoftKeyboard extends InputMethodService
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes) {
-        if (isWordSeparator(primaryCode)) {
-            handleCharacter(primaryCode);
-            updateShiftKeyState(getCurrentInputEditorInfo());
-        } else if (primaryCode == Keyboard.KEYCODE_DELETE) {
+        if (primaryCode == Keyboard.KEYCODE_DELETE) {
             handleBackspace();
         } else if (primaryCode == Keyboard.KEYCODE_SHIFT) {
             handleShift();
@@ -190,6 +184,7 @@ public class SoftKeyboard extends InputMethodService
     }
     
     private void handleBackspace() {
+        //TODO: fix bug
         keyDownUp(KeyEvent.KEYCODE_DEL);
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
@@ -251,10 +246,6 @@ public class SoftKeyboard extends InputMethodService
         } else {
             mLastShiftTime = now;
         }
-    }
-    
-    public boolean isWordSeparator(int code) {
-        return mWordSeparators.contains(String.valueOf((char)code));
     }
     
     public void swipeRight() {
