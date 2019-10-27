@@ -31,8 +31,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
-import static android.view.KeyEvent.KEYCODE_LANGUAGE_SWITCH;
-
 public class SoftKeyboard extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
 
@@ -173,7 +171,7 @@ public class SoftKeyboard extends InputMethodService
             handleBackspace();
         } else if (primaryCode == Keyboard.KEYCODE_SHIFT) {
             handleShift();
-        } else if (primaryCode == KEYCODE_LANGUAGE_SWITCH) {
+        } else if (primaryCode == LatinKeyboard.KEYCODE_LANGUAGE_SWITCH) {
             handleLanguageSwitch();
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE && mInputView != null) {
             Keyboard current = mInputView.getKeyboard();

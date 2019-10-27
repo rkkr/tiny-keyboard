@@ -24,7 +24,7 @@ import android.view.inputmethod.EditorInfo;
 
 public class LatinKeyboard extends Keyboard {
 
-    private static final int KEYCODE_LANGUAGE_SWITCH = -101;
+    public static final int KEYCODE_LANGUAGE_SWITCH = -101;
 
     private Key mEnterKey;
     private Key mModeChangeKey;
