@@ -154,52 +154,10 @@ public class SoftKeyboard extends InputMethodService
         switch (attribute.inputType & InputType.TYPE_MASK_CLASS) {
             case InputType.TYPE_CLASS_NUMBER:
             case InputType.TYPE_CLASS_DATETIME:
+            case InputType.TYPE_CLASS_PHONE:
                 // Numbers and dates default to the symbols keyboard, with
                 // no extra features.
                 mCurKeyboard = mSymbolsKeyboard;
-                break;
-                
-            case InputType.TYPE_CLASS_PHONE:
-                // Phones will also default to the symbols keyboard, though
-                // often you will want to have a dedicated phone keyboard.
-                mCurKeyboard = mSymbolsKeyboard;
-                break;
-                
-            case InputType.TYPE_CLASS_TEXT:
-                // This is general text editing.  We will default to the
-                // normal alphabetic keyboard, and assume that we should
-                // be doing predictive text (showing candidates as the
-                // user types).
-                mCurKeyboard = mQwertyKeyboard;
-                
-                // We now look for a few special variations of text that will
-                // modify our behavior.
-                int variation = attribute.inputType & InputType.TYPE_MASK_VARIATION;
-                if (variation == InputType.TYPE_TEXT_VARIATION_PASSWORD ||
-                        variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
-                    // Do not display predictions / what the user is typing
-                    // when they are entering a password.
-                }
-                
-                if (variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                        || variation == InputType.TYPE_TEXT_VARIATION_URI
-                        || variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
-                    // Our predictions are not useful for e-mail addresses
-                    // or URIs.
-                }
-                
-                if ((attribute.inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
-                    // If this is an auto-complete text view, then our predictions
-                    // will not be shown and instead we will allow the editor
-                    // to supply their own.  We only show the editor's
-                    // candidates when in fullscreen mode, otherwise relying
-                    // own it displaying its own UI.
-                }
-                
-                // We also want to look at the current state of the editor
-                // to decide whether our alphabetic keyboard should start out
-                // shifted.
-                updateShiftKeyState(attribute);
                 break;
                 
             default:
@@ -393,16 +351,7 @@ public class SoftKeyboard extends InputMethodService
     }
     
     private void handleBackspace() {
-        final int length = mComposing.length();
-        if (length > 1) {
-            mComposing.delete(length - 1, length);
-            getCurrentInputConnection().setComposingText(mComposing, 1);
-        } else if (length > 0) {
-            mComposing.setLength(0);
-            getCurrentInputConnection().commitText("", 0);
-        } else {
-            keyDownUp(KeyEvent.KEYCODE_DEL);
-        }
+        keyDownUp(KeyEvent.KEYCODE_DEL);
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
@@ -436,12 +385,6 @@ public class SoftKeyboard extends InputMethodService
         getCurrentInputConnection().commitText(
                 String.valueOf((char) primaryCode), 1);
         updateShiftKeyState(getCurrentInputEditorInfo());
-    }
-
-    private void handleClose() {
-        commitTyped(getCurrentInputConnection());
-        requestHideSelf(0);
-        mInputView.closing();
     }
 
     private IBinder getToken() {
@@ -485,11 +428,9 @@ public class SoftKeyboard extends InputMethodService
     }
     
     public void swipeLeft() {
-        handleBackspace();
     }
 
     public void swipeDown() {
-        handleClose();
     }
 
     public void swipeUp() {
