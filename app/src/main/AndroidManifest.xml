@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" 
         package="rkr.tinykeyboard.inputmethod">
-    <application android:label="@string/ime_name">
+    <application
+        android:label="@string/ime_name"
+        android:icon="@drawable/ic_launcher">
         <service android:name="SoftKeyboard"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
