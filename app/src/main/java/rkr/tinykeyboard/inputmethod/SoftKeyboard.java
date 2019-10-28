@@ -186,7 +186,6 @@ public class SoftKeyboard extends InputMethodService
     }
     
     private void handleBackspace() {
-        //TODO: fix bug
         keyDownUp(KeyEvent.KEYCODE_DEL);
         updateShiftKeyState(getCurrentInputEditorInfo());
     }

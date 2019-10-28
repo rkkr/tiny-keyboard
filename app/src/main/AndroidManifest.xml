@@ -3,8 +3,10 @@
     <application
         android:label="@string/ime_name"
         android:icon="@drawable/ic_launcher">
-        <service android:name="SoftKeyboard"
-                android:permission="android.permission.BIND_INPUT_METHOD">
+        <service
+            android:name="SoftKeyboard"
+            android:directBootAware="true"
+            android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
