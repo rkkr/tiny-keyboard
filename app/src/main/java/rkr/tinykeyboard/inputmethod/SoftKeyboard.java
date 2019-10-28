@@ -161,7 +161,9 @@ public class SoftKeyboard extends InputMethodService
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes) {
-        if (primaryCode == Keyboard.KEYCODE_DELETE) {
+        if (primaryCode == Keyboard.KEYCODE_DONE) {
+            keyDownUp(KeyEvent.KEYCODE_ENTER);
+        } else if (primaryCode == Keyboard.KEYCODE_DELETE) {
             handleBackspace();
         } else if (primaryCode == Keyboard.KEYCODE_SHIFT) {
             handleShift();
