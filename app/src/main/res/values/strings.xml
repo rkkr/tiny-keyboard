@@ -25,7 +25,4 @@
     <string name="label_go_key">Go</string>
     <string name="label_next_key">Next</string>
     <string name="label_send_key">Send</string>
-
-    <!-- Labels for subtype -->
-    <string name="label_subtype_generic">%s</string>
 </resources>
