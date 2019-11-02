@@ -27,9 +27,9 @@ public class LatinKeyboard extends Keyboard {
     public static final int KEYCODE_LANGUAGE_SWITCH = -101;
 
     private Key mEnterKey;
-    private Key mModeChangeKey;
+    private Key mSpaceKey;
     private Key mLanguageSwitchKey;
-    private Key mSavedModeChangeKey;
+    private Key mSavedSpaceKey;
     private Key mSavedLanguageSwitchKey;
 
     public LatinKeyboard(Context context, int xmlLayoutResId) {
@@ -41,9 +41,9 @@ public class LatinKeyboard extends Keyboard {
         Key key = new Key(res, parent, x, y, parser);
         if (key.codes[0] == 10) {
             mEnterKey = key;
-        } else if (key.codes[0] == Keyboard.KEYCODE_MODE_CHANGE) {
-            mModeChangeKey = key;
-            mSavedModeChangeKey = new Key(res, parent, x, y, parser);
+        } else if (key.codes[0] == 32) {
+            mSpaceKey = key;
+            mSavedSpaceKey = new Key(res, parent, x, y, parser);
         } else if (key.codes[0] == KEYCODE_LANGUAGE_SWITCH) {
             mLanguageSwitchKey = key;
             mSavedLanguageSwitchKey = new Key(res, parent, x, y, parser);
@@ -53,20 +53,15 @@ public class LatinKeyboard extends Keyboard {
 
     void setLanguageSwitchKeyVisibility(boolean visible) {
         if (visible) {
-            // The language switch key should be visible. Restore the size of the mode change key
-            // and language switch key using the saved layout.
-            mModeChangeKey.width = mSavedModeChangeKey.width;
-            mModeChangeKey.x = mSavedModeChangeKey.x;
+            mSpaceKey.width = mSavedSpaceKey.width;
+            mSpaceKey.x = mSavedSpaceKey.x;
             mLanguageSwitchKey.width = mSavedLanguageSwitchKey.width;
-            mLanguageSwitchKey.icon = mSavedLanguageSwitchKey.icon;
-            mLanguageSwitchKey.iconPreview = mSavedLanguageSwitchKey.iconPreview;
+            mLanguageSwitchKey.label = mSavedLanguageSwitchKey.label;
         } else {
-            // The language switch key should be hidden. Change the width of the mode change key
-            // to fill the space of the language key so that the user will not see any strange gap.
-            mModeChangeKey.width = mSavedModeChangeKey.width + mSavedLanguageSwitchKey.width;
+            mSpaceKey.width = mSavedSpaceKey.width + mSavedLanguageSwitchKey.width;
+            mSpaceKey.x = mSavedSpaceKey.x - mSavedLanguageSwitchKey.width;
             mLanguageSwitchKey.width = 0;
-            mLanguageSwitchKey.icon = null;
-            mLanguageSwitchKey.iconPreview = null;
+            mLanguageSwitchKey.label = null;
         }
     }
 
