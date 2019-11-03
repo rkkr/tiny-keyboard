@@ -39,7 +39,7 @@ public class LatinKeyboard extends Keyboard {
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y, XmlResourceParser parser) {
         Key key = new Key(res, parent, x, y, parser);
-        if (key.codes[0] == 10) {
+        if (key.codes[0] == Keyboard.KEYCODE_DONE) {
             mEnterKey = key;
         } else if (key.codes[0] == 32) {
             mSpaceKey = key;
