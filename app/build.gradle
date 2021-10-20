@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 31
+    buildToolsVersion "31.0.0"
     defaultConfig {
         applicationId "rkr.tinykeyboard.inputmethod"
         minSdkVersion 15
-        targetSdkVersion 29
-        versionCode 5
-        versionName "0.5"
+        targetSdkVersion 31
+        versionCode 6
+        versionName "0.6"
     }
     buildTypes {
         release {
