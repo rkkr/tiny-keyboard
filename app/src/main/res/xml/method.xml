@@ -24,7 +24,8 @@
         android:supportsSwitchingToNextInputMethod="true"
 >
     <subtype
-        android:label="%s"
+        android:icon="@drawable/ic_launcher"
         android:imeSubtypeLocale="en_US"
-        android:imeSubtypeMode="keyboard" />
+        android:imeSubtypeMode="keyboard"
+        android:isAsciiCapable="true" />
 </input-method>
