@@ -65,7 +65,7 @@
         <Key android:codes="-2" android:keyLabel="ABC" android:keyWidth="@dimen/key_width_action"/>
         <Key android:codes="44" android:keyLabel=","/>
         <Key android:codes="-101" android:keyLabel="@string/language"/>
-        <Key android:codes="32" android:keyLabel=" " android:keyWidth="@dimen/key_width_space" android:isRepeatable="true"/>
+        <Key android:codes="32" android:keyLabel=" " android:keyWidth="@dimen/key_width_space"/>
         <Key android:codes="46" android:keyLabel="."/>
         <Key android:codes="-4" android:keyLabel="@string/enter" android:keyWidth="@dimen/key_width_action"/>
     </Row>
