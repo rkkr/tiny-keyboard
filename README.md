@@ -4,7 +4,7 @@
 
 ## About
 
-- Smallest possible APK size of 22kB (as of version 0.3)
+- Smallest possible APK size of 26kB (as of version 0.7)
 - Permissions: 0
 - Supported layouts: en_US
 - No Launcher icon and Settings
