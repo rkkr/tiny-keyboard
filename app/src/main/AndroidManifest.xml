@@ -2,7 +2,7 @@
         package="rkr.tinykeyboard.inputmethod">
     <application
         android:label="@string/ime_name"
-        android:icon="@drawable/ic_launcher">
+        android:icon="@mipmap/ic_launcher">
         <service
             android:name="SoftKeyboard"
             android:directBootAware="true"
