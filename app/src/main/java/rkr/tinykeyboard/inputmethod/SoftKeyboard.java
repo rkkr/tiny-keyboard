@@ -26,7 +26,9 @@ import android.os.IBinder;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -88,6 +90,17 @@ public class SoftKeyboard extends InputMethodService
         mInputView = (KeyboardView) getLayoutInflater().inflate(R.layout.input, null);
         mInputView.setOnKeyboardActionListener(this);
         mInputView.setPreviewEnabled(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            mInputView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
+                android.graphics.Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars());
+                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+                mlp.leftMargin = insets.left;
+                mlp.bottomMargin = insets.bottom;
+                mlp.rightMargin = insets.right;
+                view.setLayoutParams(mlp);
+                return WindowInsets.CONSUMED;
+            });
+        }
         setLatinKeyboard(mQwertyKeyboard);
         return mInputView;
     }
