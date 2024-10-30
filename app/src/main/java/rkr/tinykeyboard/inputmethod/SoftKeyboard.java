@@ -37,8 +37,8 @@ public class SoftKeyboard extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
 
     private InputMethodManager mInputMethodManager;
-
     private KeyboardView mInputView;
+    private static android.graphics.Insets mInsets;
 
     private int mLastDisplayWidth;
     private boolean mCapsLock;
@@ -91,18 +91,25 @@ public class SoftKeyboard extends InputMethodService
         mInputView.setOnKeyboardActionListener(this);
         mInputView.setPreviewEnabled(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            setLayoutParams(mInputView);
             mInputView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
-                android.graphics.Insets insets = windowInsets.getInsets(WindowInsets.Type.systemBars());
-                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-                mlp.leftMargin = insets.left;
-                mlp.bottomMargin = insets.bottom;
-                mlp.rightMargin = insets.right;
-                view.setLayoutParams(mlp);
+                mInsets = windowInsets.getInsets(WindowInsets.Type.systemBars());
+                setLayoutParams(mInputView);
                 return WindowInsets.CONSUMED;
             });
         }
         setLatinKeyboard(mQwertyKeyboard);
         return mInputView;
+    }
+
+    private void setLayoutParams(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && mInsets != null) {
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            mlp.leftMargin = mInsets.left;
+            mlp.bottomMargin = mInsets.bottom;
+            mlp.rightMargin = mInsets.right;
+            view.setLayoutParams(mlp);
+        }
     }
 
     private void setLatinKeyboard(LatinKeyboard nextKeyboard) {
