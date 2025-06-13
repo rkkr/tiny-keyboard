@@ -26,7 +26,6 @@ import android.os.IBinder;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -104,12 +103,14 @@ public class SoftKeyboard extends InputMethodService
 
     private void setLayoutParams(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && mInsets != null) {
-            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            mlp.leftMargin = mInsets.left;
-            mlp.bottomMargin = mInsets.bottom;
-            mlp.rightMargin = mInsets.right;
-            view.setLayoutParams(mlp);
+            view.setPadding(mInsets.left, 0, mInsets.right, mInsets.bottom);
         }
+    }
+
+    @Override
+    public boolean onEvaluateInputViewShown() {
+        super.onEvaluateInputViewShown();
+        return true;
     }
 
     private void setLatinKeyboard(LatinKeyboard nextKeyboard) {
@@ -159,7 +160,6 @@ public class SoftKeyboard extends InputMethodService
         super.onStartInputView(attribute, restarting);
         // Apply the selected keyboard to the input view.
         setLatinKeyboard(mCurKeyboard);
-        mInputView.closing();
     }
 
     private void updateShiftKeyState(EditorInfo attr) {
