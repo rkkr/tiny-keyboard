@@ -7,3 +7,5 @@
 /captures
 .externalNativeBuild
 .cxx
+/gradle
+!/gradle/wrapper/gradle-wrapper.properties
